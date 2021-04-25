@@ -1,4 +1,5 @@
 import game.Kalaha;
+import minmax.MinMax;
 
 import java.util.Random;
 import java.util.Scanner;
@@ -11,8 +12,9 @@ public class Controller {
     }
 
     public void startGame(){
-        Random random = new Random();
-        int player = random.nextInt(2) + 1;
+        /*Random random = new Random();
+        int player = random.nextInt(2) + 1;*/
+        int player = 1;
 
         Scanner scanner = new Scanner(System.in);
         String line;
@@ -29,6 +31,75 @@ public class Controller {
                 if (selectedField != Integer.MIN_VALUE)
                     condition = true;
             } while (!condition);
+
+            player = kalaha.move(selectedField, player);
+        } while (player != 10 && player != 20 && player != 30);
+
+        kalaha.printBoard();
+
+        if (player == 30) {
+            System.out.println("Draw");
+        } else if (player == 10) {
+            System.out.println("Player 1 won");
+        } else {
+            System.out.println("Player 2 won");
+        }
+    }
+
+    public void startGameAIvsAI(){
+        /*Random random = new Random();
+        int player = random.nextInt(2) + 1;*/
+        int player = 1;
+        MinMax algorithm;
+        int selectedField;
+        do {
+            System.out.println("Current player: " + player + "\n");
+            kalaha.printBoard();
+
+            algorithm = new MinMax();
+            selectedField = algorithm.findBest(kalaha, player);
+
+            player = kalaha.move(selectedField, player);
+        } while (player != 10 && player != 20 && player != 30);
+
+        kalaha.printBoard();
+
+        if (player == 30) {
+            System.out.println("Draw");
+        } else if (player == 10) {
+            System.out.println("Player 1 won");
+        } else {
+            System.out.println("Player 2 won");
+        }
+
+    }
+
+    public void startGamePvsAI(){
+        int player = 1;
+
+        Scanner scanner = new Scanner(System.in);
+        String line;
+        int selectedField;
+        boolean condition = false;
+
+        MinMax algorithm;
+
+        do {
+            System.out.println("Current player: " + player + "\n");
+            kalaha.printBoard();
+
+            if (player == 1) {
+                do {
+                    System.out.println("Enter the field number:");
+                    line = scanner.nextLine();
+                    selectedField = tryParseInt(line);
+                    if (selectedField != Integer.MIN_VALUE)
+                        condition = true;
+                } while (!condition);
+            } else {
+                algorithm = new MinMax();
+                selectedField = algorithm.findBest(kalaha, player);
+            }
 
             player = kalaha.move(selectedField, player);
         } while (player != 10 && player != 20 && player != 30);

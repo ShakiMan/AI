@@ -10,7 +10,22 @@ class GameBoard {
 
     GameBoard(GameBoard gameBoardObj) {
         board = new GameField[gameBoardObj.board.length];
-        System.arraycopy(gameBoardObj.board, 0, board, 0, gameBoardObj.board.length);
+        //System.arraycopy(gameBoardObj.board, 0, board, 0, gameBoardObj.board.length);
+        for (int i = 0; i < N; i++) {
+            if (i < N / 2) {
+                if (i == (N / 2 - 1)) {
+                    board[i] = new GameField(i + 1, gameBoardObj.board[i].getStonesAmount(), 1, true);
+                    continue;
+                }
+                board[i] = new GameField(i + 1, gameBoardObj.board[i].getStonesAmount(), 1, false);
+            } else {
+                if (i == (N - 1)) {
+                    board[i] = new GameField(i + 1, gameBoardObj.board[i].getStonesAmount(), 2, true);
+                    continue;
+                }
+                board[i] = new GameField(i + 1, gameBoardObj.board[i].getStonesAmount(), 2, false);
+            }
+        }
     }
 
     void initBoard() {
@@ -79,7 +94,7 @@ class GameBoard {
     int moveStones(int field, int player) {
         int notUsedField, stonesToMove;
 
-        if (field < 0 || field > 14) {
+        if (field <= 0 || field > 14) {
             System.out.println("No such field.");
             return -1;
         }
@@ -150,7 +165,7 @@ class GameBoard {
         }
         if (stop)
             return 1;
-        for (int i = N / 2; i < N; i++) {
+        for (int i = N / 2; i < N - 1; i++) {
             if (board[i].getStonesAmount() == 0)
                 stop = true;
             else {
@@ -196,16 +211,26 @@ class GameBoard {
         if (player == 1) {
             for (int i = N / 2; i < N - 1; i++) {
                 board[N - 1].setStonesAmount(board[N - 1].getStonesAmount() + board[i].getStonesAmount());
+                board[i].setStonesAmount(0);
             }
         }
         if (player == 2) {
             for (int i = 0; i < N / 2 - 1; i++) {
                 board[N / 2 - 1].setStonesAmount(board[N / 2 - 1].getStonesAmount() + board[i].getStonesAmount());
+                board[i].setStonesAmount(0);
             }
         }
     }
 
     int whoWon() {
         return board[N / 2 - 1].getStonesAmount() - board[N - 1].getStonesAmount();
+    }
+
+    int evaluate() {
+        return board[N / 2 - 1].getStonesAmount() - board[N - 1].getStonesAmount();
+    }
+
+    boolean isEmptyField(int field) {
+        return board[field-1].getStonesAmount() == 0;
     }
 }
