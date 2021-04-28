@@ -36,36 +36,6 @@ public class Kalaha {
     }
 
     public int move(int field, int player) {
-        /*int end = gameBoard.checkEndGameCondition();
-        if (end == -1) {
-
-            int lastField = gameBoard.moveStones(field, player);
-            if (lastField > 0) {
-                boolean another = gameBoard.checkIfAnotherTurn(lastField, player);
-                if (another)
-                    return player;
-                else {
-                    if (player == 1)
-                        return 2;
-                    else
-                        return 1;
-                }
-            } else {
-                if (lastField == -4) {
-                    if (player == 1)
-                        return 2;
-                    else
-                        return 1;
-                }
-                return player;
-            }
-
-        } else {
-            gameBoard.getRestOfStones(end);
-            return whoWon();
-        }*/
-
-
         int lastField = this.gameBoard.moveStones(field, player);
         int end = this.gameBoard.checkEndGameCondition();
 
@@ -91,38 +61,6 @@ public class Kalaha {
             }
             return player;
         }
-
-
-        /*int lastField = this.gameBoard.moveStones(field, player);
-        int end = this.gameBoard.checkEndGameCondition();
-
-        this.lastMoveIndex = field;
-        this.lastFieldIndex = lastField;
-
-        if (end != -1) {
-            this.gameBoard.getRestOfStones(end);
-            return whoWon();
-        }
-
-        if (lastField > 0) {
-            boolean another = this.gameBoard.checkIfAnotherTurn(lastField, player);
-            if (another)
-                return player;
-            else {
-                if (player == 1)
-                    return 2;
-                else
-                    return 1;
-            }
-        } else {
-            if (lastField == -4) {
-                if (player == 1)
-                    return 2;
-                else
-                    return 1;
-            }
-            return player;
-        }*/
     }
 
     public boolean isFirstMove() {

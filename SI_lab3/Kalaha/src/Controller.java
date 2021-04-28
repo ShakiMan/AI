@@ -60,14 +60,20 @@ public class Controller {
         MinMax algorithm;
         int selectedField;
         do {
-            System.out.println("Current player: " + player + "\n");
-            kalaha.printBoard();
+            if (kalaha.checkEndGameCondition(player)) {
+                kalaha.getRestOfStones(player);
+                player = kalaha.whoWon();
+            } else {
+                System.out.println("Current player: " + player + "\n");
+                kalaha.printBoard();
 
-            algorithm = new MinMax();
-            selectedField = algorithm.findBest(kalaha, player);
+                algorithm = new MinMax();
+                selectedField = algorithm.findBest(kalaha, player);
 
-            System.out.println("Player " + player + " moved from field " + selectedField + "\n");
-            player = kalaha.move(selectedField, player);
+                System.out.println("Player " + player + " moved from field " + selectedField + "\n");
+                player = kalaha.move(selectedField, player);
+            }
+
         } while (player != 10 && player != 20 && player != 30);
 
         kalaha.printBoard();
@@ -89,28 +95,34 @@ public class Controller {
         String line;
         int selectedField;
         boolean condition = false;
-
         MinMax algorithm;
 
         do {
-            System.out.println("Current player: " + player + "\n");
-            kalaha.printBoard();
-
-            if (player == 1) {
-                do {
-                    System.out.println("Enter the field number:");
-                    line = scanner.nextLine();
-                    selectedField = tryParseInt(line);
-                    if (selectedField != Integer.MIN_VALUE)
-                        condition = true;
-                } while (!condition);
+            if (kalaha.checkEndGameCondition(player)) {
+                kalaha.getRestOfStones(player);
+                player = kalaha.whoWon();
             } else {
-                algorithm = new MinMax();
-                selectedField = algorithm.findBest(kalaha, player);
+                System.out.println("Current player: " + player + "\n");
+                kalaha.printBoard();
+
+                if (player == 1) {
+                    do {
+                        System.out.println("Enter the field number:");
+                        line = scanner.nextLine();
+                        selectedField = tryParseInt(line);
+                        if (selectedField != Integer.MIN_VALUE)
+                            condition = true;
+                    } while (!condition);
+                } else {
+                    algorithm = new MinMax();
+                    selectedField = algorithm.findBest(kalaha, player);
+                }
+
+                System.out.println("Player " + player + " moved from field " + selectedField + "\n");
+                player = kalaha.move(selectedField, player);
             }
 
-            System.out.println("Player " + player + " moved from field " + selectedField + "\n");
-            player = kalaha.move(selectedField, player);
+
         } while (player != 10 && player != 20 && player != 30);
 
         kalaha.printBoard();
