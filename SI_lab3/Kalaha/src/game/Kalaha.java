@@ -64,7 +64,36 @@ public class Kalaha {
             gameBoard.getRestOfStones(end);
             return whoWon();
         }*/
+
+
         int lastField = this.gameBoard.moveStones(field, player);
+        int end = this.gameBoard.checkEndGameCondition();
+
+        this.lastMoveIndex = field;
+        this.lastFieldIndex = lastField;
+
+        if (lastField >= 0) {
+            boolean another = this.gameBoard.checkIfAnotherTurn(lastField, player);
+            if (another)
+                return player;
+            else {
+                if (player == 1)
+                    return 2;
+                else
+                    return 1;
+            }
+        } else {
+            if (lastField == -4) {
+                if (player == 1)
+                    return 2;
+                else
+                    return 1;
+            }
+            return player;
+        }
+
+
+        /*int lastField = this.gameBoard.moveStones(field, player);
         int end = this.gameBoard.checkEndGameCondition();
 
         this.lastMoveIndex = field;
@@ -93,10 +122,10 @@ public class Kalaha {
                     return 1;
             }
             return player;
-        }
+        }*/
     }
 
-    public boolean isFirstMove(){
+    public boolean isFirstMove() {
         return this.lastMoveIndex == -100;
     }
 
@@ -129,6 +158,18 @@ public class Kalaha {
         } else {
             return -eval;
         }
+    }
+
+    public boolean checkIfAnotherTurn(int field, int player) {
+        return gameBoard.checkIfAnotherTurn(field, player);
+    }
+
+    public boolean checkEndGameCondition(int player) {
+        return this.gameBoard.checkEndGameCondition(player);
+    }
+
+    public void getRestOfStones(int player) {
+        this.gameBoard.getRestOfStones(player);
     }
 
     public List<Kalaha> getAllChildren(int player) {

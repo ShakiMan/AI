@@ -5,7 +5,7 @@ import game.Kalaha;
 import java.util.Random;
 
 public class MinMax {
-    private int maxDepth = 8;
+    private int maxDepth = 12;
     private int player = -1;
     private int nextMoveNumber = -1;
 
@@ -32,10 +32,23 @@ public class MinMax {
         }
 
 
+
+
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
             for (Kalaha child : position.getAllChildren(player)) {
-                int eval = minimax(child, depth - 1, alpha, beta, false);
+                int eval;
+                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 1)){
+                    eval = minimax(child, depth - 1, alpha, beta, true);
+                } else {
+                    eval = minimax(child, depth - 1, alpha, beta, false);
+                }
+                /*System.out.println("Alpha = " + alpha);
+                System.out.println("Beta = " + beta);
+                System.out.println(maximizingPlayer);
+                System.out.println(eval);
+                System.out.println(depth);
+                System.out.println();*/
                 if (depth == maxDepth && eval > maxEval)
                     nextMoveNumber = child.getLastMoveIndex();
                 maxEval = Math.max(maxEval, eval);
@@ -47,7 +60,18 @@ public class MinMax {
         } else {
             int minEval = Integer.MAX_VALUE;
             for (Kalaha child : position.getAllChildren(player)) {
-                int eval = minimax(child, depth - 1, alpha, beta, true);
+                int eval;
+                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 2)){
+                    eval = minimax(child, depth - 1, alpha, beta, true);
+                } else {
+                    eval = minimax(child, depth - 1, alpha, beta, false);
+                }
+                /*System.out.println("Alpha = " + alpha);
+                System.out.println("Beta = " + beta);
+                System.out.println(maximizingPlayer);
+                System.out.println(eval);
+                System.out.println(depth);
+                System.out.println();*/
                 if (depth == maxDepth && eval > minEval)
                     nextMoveNumber = child.getLastMoveIndex();
                 minEval = Math.min(minEval, eval);

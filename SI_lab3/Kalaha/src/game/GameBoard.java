@@ -29,7 +29,7 @@ class GameBoard {
     }
 
     void initBoard() {
-        for (int i = 0; i < N; i++) {
+        /*for (int i = 0; i < N; i++) {
             if (i < N / 2) {
                 if (i == (N / 2 - 1)) {
                     board[i] = new GameField(i + 1, 0, 1, true);
@@ -43,9 +43,9 @@ class GameBoard {
                 }
                 board[i] = new GameField(i + 1, 4, 2, false);
             }
-        }
+        }*/
 
-        /*for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             if (i < N / 2) {
                 if (i == (N / 2 - 1)) {
                     board[i] = new GameField(i + 1, 0, 1, true);
@@ -60,7 +60,13 @@ class GameBoard {
                 board[i] = new GameField(i + 1, 0, 2, false);
             }
         }
-        board[5].setStonesAmount(8);
+
+        board[2].setStonesAmount(1);
+        board[5].setStonesAmount(1);
+        board[9].setStonesAmount(1);
+        board[11].setStonesAmount(3);
+
+        /*board[5].setStonesAmount(8);
         board[6].setStonesAmount(23);
         board[10].setStonesAmount(10);
         board[11].setStonesAmount(1);
@@ -94,7 +100,7 @@ class GameBoard {
     int moveStones(int field, int player) {
         int notUsedField, stonesToMove;
 
-        if (field <= 0 || field > 14) {
+        if (field < 0 || field > 14) {
             System.out.println("No such field.");
             return -1;
         }
@@ -120,6 +126,7 @@ class GameBoard {
 
         board[field - 1].setStonesAmount(0);
         int index = field;
+
         for (int i = 0; i < stonesToMove - 1; i++) {
             if (index == notUsedField)
                 index = (index + 1) % board.length;
@@ -178,6 +185,31 @@ class GameBoard {
         return -1;
     }
 
+    boolean checkEndGameCondition(int player) {
+        boolean stop = false;
+        if (player == 1) {
+            for (int i = 0; i < N / 2 - 1; i++) {
+                if (board[i].getStonesAmount() == 0)
+                    stop = true;
+                else {
+                    stop = false;
+                    break;
+                }
+            }
+        }
+        if (player == 2) {
+            for (int i = N / 2; i < N - 1; i++) {
+                if (board[i].getStonesAmount() == 0)
+                    stop = true;
+                else {
+                    stop = false;
+                    break;
+                }
+            }
+        }
+        return stop;
+    }
+
     boolean checkIfAnotherTurn(int field, int player) {
         if (player == 1 && field == 6) {
             return true;
@@ -231,6 +263,6 @@ class GameBoard {
     }
 
     boolean isEmptyField(int field) {
-        return board[field-1].getStonesAmount() == 0;
+        return board[field - 1].getStonesAmount() == 0;
     }
 }

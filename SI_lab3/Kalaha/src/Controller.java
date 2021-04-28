@@ -22,17 +22,24 @@ public class Controller {
         boolean condition = false;
 
         do {
-            System.out.println("Current player: " + player + "\n");
-            kalaha.printBoard();
-            do {
-                System.out.println("Enter the field number:");
-                line = scanner.nextLine();
-                selectedField = tryParseInt(line);
-                if (selectedField != Integer.MIN_VALUE)
-                    condition = true;
-            } while (!condition);
+            if (kalaha.checkEndGameCondition(player)) {
+                kalaha.getRestOfStones(player);
+                player = kalaha.whoWon();
+            } else {
+                System.out.println("Current player: " + player + "\n");
+                kalaha.printBoard();
 
-            player = kalaha.move(selectedField, player);
+                do {
+                    System.out.println("Enter the field number:");
+                    line = scanner.nextLine();
+                    selectedField = tryParseInt(line);
+                    if (selectedField != Integer.MIN_VALUE)
+                        condition = true;
+                } while (!condition);
+
+                System.out.println("Player " + player + " moved from field " + selectedField + "\n");
+                player = kalaha.move(selectedField, player);
+            }
         } while (player != 10 && player != 20 && player != 30);
 
         kalaha.printBoard();
@@ -59,6 +66,7 @@ public class Controller {
             algorithm = new MinMax();
             selectedField = algorithm.findBest(kalaha, player);
 
+            System.out.println("Player " + player + " moved from field " + selectedField + "\n");
             player = kalaha.move(selectedField, player);
         } while (player != 10 && player != 20 && player != 30);
 
@@ -101,6 +109,7 @@ public class Controller {
                 selectedField = algorithm.findBest(kalaha, player);
             }
 
+            System.out.println("Player " + player + " moved from field " + selectedField + "\n");
             player = kalaha.move(selectedField, player);
         } while (player != 10 && player != 20 && player != 30);
 
