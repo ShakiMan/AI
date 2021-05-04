@@ -5,12 +5,18 @@ import game.Kalaha;
 import java.util.Random;
 
 public class MinMax {
-    private int maxDepth = 12;
+    private final int maxDepth;
     private int player = -1;
     private int nextMoveNumber = -1;
+    private final boolean isAlphaBeta;
+
+    public MinMax(boolean isAlphaBeta, int maxDepth) {
+        this.isAlphaBeta = isAlphaBeta;
+        this.maxDepth = maxDepth;
+    }
 
     public int findBest(Kalaha initialPosition, int player) {
-        if (initialPosition.isFirstMove() && player == 1){
+        if (initialPosition.isFirstMove() && player == 1) {
             return 1 + new Random().nextInt(6);
         }
 
@@ -19,12 +25,12 @@ public class MinMax {
         minimax(initialPosition, maxDepth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         if (nextMoveNumber < 0) {
             if (player == 2) {
-                for (int i = 7; i < 13; i++) {
+                for (int i = 8; i < 14; i++) {
                     if (!initialPosition.isEmptyField(i))
                         nextMoveNumber = i;
                 }
             } else {
-                for (int i = 0; i < 6; i++) {
+                for (int i = 1; i < 7; i++) {
                     if (!initialPosition.isEmptyField(i))
                         nextMoveNumber = i;
                 }
@@ -34,56 +40,46 @@ public class MinMax {
     }
 
     private int minimax(Kalaha position, int depth, int alpha, int beta, boolean maximizingPlayer) {
-//        System.out.println(depth);
-
         if (depth == 0 || position.gameOver()) {
-            return position.evaluate(player);
+            return position.evaluate(player, "anotherAndBeating", position.getLastFieldIndex(), position.getLastMoveIndex());
         }
 
         if (maximizingPlayer) {
             int maxEval = Integer.MIN_VALUE;
             for (Kalaha child : position.getAllChildren(player)) {
                 int eval;
-                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 1)){
+                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 1)) {
                     eval = minimax(child, depth - 1, alpha, beta, true);
                 } else {
                     eval = minimax(child, depth - 1, alpha, beta, false);
                 }
-                /*System.out.println("Alpha = " + alpha);
-                System.out.println("Beta = " + beta);
-                System.out.println(maximizingPlayer);
-                System.out.println(eval);
-                System.out.println(depth);
-                System.out.println();*/
                 if (depth == maxDepth && eval > maxEval)
                     nextMoveNumber = child.getLastMoveIndex();
                 maxEval = Math.max(maxEval, eval);
-                alpha = Math.max(alpha, eval);
-                /*if (beta <= alpha)
-                    break;*/
+                if (isAlphaBeta) {
+                    alpha = Math.max(alpha, eval);
+                    if (beta <= alpha)
+                        break;
+                }
             }
             return maxEval;
         } else {
             int minEval = Integer.MAX_VALUE;
             for (Kalaha child : position.getAllChildren(player)) {
                 int eval;
-                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 2)){
+                if (child.checkIfAnotherTurn(child.getLastFieldIndex(), 2)) {
                     eval = minimax(child, depth - 1, alpha, beta, false);
                 } else {
                     eval = minimax(child, depth - 1, alpha, beta, true);
                 }
-                /*System.out.println("Alpha = " + alpha);
-                System.out.println("Beta = " + beta);
-                System.out.println(maximizingPlayer);
-                System.out.println(eval);
-                System.out.println(depth);
-                System.out.println();*/
                 if (depth == maxDepth && eval > minEval)
                     nextMoveNumber = child.getLastMoveIndex();
                 minEval = Math.min(minEval, eval);
-                beta = Math.min(beta, eval);
-                /*if (beta <= alpha)
-                    break;*/
+                if (isAlphaBeta) {
+                    beta = Math.min(beta, eval);
+                    if (beta <= alpha)
+                        break;
+                }
             }
             return minEval;
         }

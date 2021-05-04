@@ -98,6 +98,10 @@ public class Kalaha {
         }
     }
 
+    public int evaluate(int player, String heuristic, int lastField, int moveField){
+        return this.gameBoard.evaluate(player, heuristic, lastField, moveField);
+    }
+
     public boolean checkIfAnotherTurn(int field, int player) {
         return gameBoard.checkIfAnotherTurn(field, player);
     }

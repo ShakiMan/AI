@@ -1,7 +1,7 @@
 import game.Kalaha;
 import minmax.MinMax;
 
-import java.util.Random;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Controller {
@@ -11,9 +11,7 @@ public class Controller {
         kalaha = new Kalaha();
     }
 
-    public void startGame(){
-        /*Random random = new Random();
-        int player = random.nextInt(2) + 1;*/
+    public void startGame() {
         int player = 1;
 
         Scanner scanner = new Scanner(System.in);
@@ -53,10 +51,14 @@ public class Controller {
         }
     }
 
-    public void startGameAIvsAI(){
-        /*Random random = new Random();
-        int player = random.nextInt(2) + 1;*/
+    public long[] startGameAIvsAI(boolean isAlphaBeta, int depth) {
         int player = 1;
+        int player1Moves, player2Moves;
+        long player1Times, player2Times;
+        player1Moves = 0;
+        player2Moves = 0;
+        player1Times = 0;
+        player2Times = 0;
         MinMax algorithm;
         int selectedField;
         do {
@@ -67,10 +69,20 @@ public class Controller {
                 System.out.println("Current player: " + player + "\n");
                 kalaha.printBoard();
 
-                algorithm = new MinMax();
+                long start = System.nanoTime();
+                algorithm = new MinMax(isAlphaBeta, depth);
                 selectedField = algorithm.findBest(kalaha, player);
+                long end = System.nanoTime();
+                System.out.println("Time: " + (end - start));
 
                 System.out.println("Player " + player + " moved from field " + selectedField + "\n");
+                if (player == 1) {
+                    player1Moves++;
+                    player1Times += (end - start);
+                } else {
+                    player2Moves++;
+                    player2Times += (end - start);
+                }
                 player = kalaha.move(selectedField, player);
             }
 
@@ -80,15 +92,73 @@ public class Controller {
 
         if (player == 30) {
             System.out.println("Draw");
+            return new long[]{player, player1Times, player1Moves, player2Times, player2Moves};
         } else if (player == 10) {
             System.out.println("Player 1 won");
+            return new long[]{player, player1Times, player1Moves};
         } else {
             System.out.println("Player 2 won");
+            return new long[]{player, player2Times, player2Moves};
         }
-
     }
 
-    public void startGamePvsAI(){
+    public ArrayList<Long> startGameAIvsAIV2(boolean isAlphaBeta, int depth) {
+        ArrayList<Long> times1 = new ArrayList<>();
+        ArrayList<Long> times2 = new ArrayList<>();
+        int player = 1;
+        int player1Moves, player2Moves;
+        long player1Times, player2Times;
+        player1Moves = 0;
+        player2Moves = 0;
+        player1Times = 0;
+        player2Times = 0;
+        MinMax algorithm;
+        int selectedField;
+        do {
+            if (kalaha.checkEndGameCondition(player)) {
+                kalaha.getRestOfStones(player);
+                player = kalaha.whoWon();
+            } else {
+                System.out.println("Current player: " + player + "\n");
+                kalaha.printBoard();
+
+                long start = System.nanoTime();
+                algorithm = new MinMax(isAlphaBeta, depth);
+                selectedField = algorithm.findBest(kalaha, player);
+                long end = System.nanoTime();
+                System.out.println("Time: " + (end - start));
+
+                System.out.println("Player " + player + " moved from field " + selectedField + "\n");
+                if (player == 1) {
+                    player1Moves++;
+                    times1.add(end - start);
+                } else {
+                    player2Moves++;
+                    times2.add(end - start);
+                }
+                player = kalaha.move(selectedField, player);
+            }
+
+        } while (player != 10 && player != 20 && player != 30);
+
+        kalaha.printBoard();
+
+        if (player == 30) {
+            System.out.println("Draw");
+            times1.add((long) player1Moves);
+            return times1;
+        } else if (player == 10) {
+            System.out.println("Player 1 won");
+            times1.add((long) player1Moves);
+            return times1;
+        } else {
+            System.out.println("Player 2 won");
+            times2.add((long) player2Moves);
+            return times2;
+        }
+    }
+
+    public void startGamePvsAI() {
         int player = 1;
 
         Scanner scanner = new Scanner(System.in);
@@ -114,7 +184,7 @@ public class Controller {
                             condition = true;
                     } while (!condition);
                 } else {
-                    algorithm = new MinMax();
+                    algorithm = new MinMax(true, 12);
                     selectedField = algorithm.findBest(kalaha, player);
                 }
 

@@ -3,6 +3,7 @@ package game;
 class GameBoard {
     private final GameField[] board;
     private static final int N = 14;
+    private static final int stonesPerField = 4;
 
     GameBoard() {
         board = new GameField[14];
@@ -29,23 +30,23 @@ class GameBoard {
     }
 
     void initBoard() {
-        /*for (int i = 0; i < N; i++) {
+        for (int i = 0; i < N; i++) {
             if (i < N / 2) {
                 if (i == (N / 2 - 1)) {
                     board[i] = new GameField(i + 1, 0, 1, true);
                     continue;
                 }
-                board[i] = new GameField(i + 1, 4, 1, false);
+                board[i] = new GameField(i + 1, stonesPerField, 1, false);
             } else {
                 if (i == (N - 1)) {
                     board[i] = new GameField(i + 1, 0, 2, true);
                     continue;
                 }
-                board[i] = new GameField(i + 1, 4, 2, false);
+                board[i] = new GameField(i + 1, stonesPerField, 2, false);
             }
-        }*/
+        }
 
-        for (int i = 0; i < N; i++) {
+        /*for (int i = 0; i < N; i++) {
             if (i < N / 2) {
                 if (i == (N / 2 - 1)) {
                     board[i] = new GameField(i + 1, 0, 1, true);
@@ -64,7 +65,7 @@ class GameBoard {
         board[2].setStonesAmount(1);
         board[5].setStonesAmount(1);
         board[9].setStonesAmount(1);
-        board[11].setStonesAmount(3);
+        board[11].setStonesAmount(3);*/
 
         /*board[5].setStonesAmount(8);
         board[6].setStonesAmount(23);
@@ -260,6 +261,74 @@ class GameBoard {
 
     int evaluate() {
         return board[N / 2 - 1].getStonesAmount() - board[N - 1].getStonesAmount();
+    }
+
+    int evaluate(int player, String heuristic, int lastField, int moveField) {
+        int eval = board[N / 2 - 1].getStonesAmount() - board[N - 1].getStonesAmount();
+        int beating = 0;
+        int anotherTurn = 0;
+        switch (heuristic) {
+            case "beating":
+                int[] copy = new int[14];
+                for (int i = 0; i < board.length; i++) {
+                    copy[i] = board[i].getStonesAmount();
+                }
+
+                if (player == 1) {
+                    if (checkIfBeating(copy, moveField, player) != -1) {
+                        beating += 5;
+                    }
+                } else {
+                    eval = -eval;
+                    if (checkIfBeating(copy, moveField, player) != -1) {
+                        beating -= 5;
+                    }
+                }
+
+                eval += beating;
+                return eval;
+            case "anotherTurn":
+                if (player == 1) {
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn += 5;
+                } else {
+                    eval = -eval;
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn -= 5;
+                }
+
+                eval += anotherTurn;
+                return eval;
+            case "anotherAndBeating":
+                copy = new int[14];
+                for (int i = 0; i < board.length; i++) {
+                    copy[i] = board[i].getStonesAmount();
+                }
+
+                if (player == 1) {
+                    if (checkIfBeating(copy, moveField, player) != -1)
+                        beating += 5;
+
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn += 5;
+                } else {
+                    eval = -eval;
+                    if (checkIfBeating(copy, moveField, player) != -1)
+                        beating -= 5;
+
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn -= 5;
+                }
+
+                eval += beating;
+                eval += anotherTurn;
+                return eval;
+            default:
+                if (player == 1)
+                    return eval;
+                else
+                    return -eval;
+        }
     }
 
     boolean isEmptyField(int field) {
