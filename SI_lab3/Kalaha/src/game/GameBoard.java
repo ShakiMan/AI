@@ -267,6 +267,7 @@ class GameBoard {
         int eval = board[N / 2 - 1].getStonesAmount() - board[N - 1].getStonesAmount();
         int beating = 0;
         int anotherTurn = 0;
+        int howFar = 0;
         switch (heuristic) {
             case "beating":
                 int[] copy = new int[14];
@@ -279,26 +280,22 @@ class GameBoard {
                         beating += 5;
                     }
                 } else {
-                    eval = -eval;
                     if (checkIfBeating(copy, moveField, player) != -1) {
                         beating -= 5;
                     }
                 }
 
-                eval += beating;
-                return eval;
+                return beating;
             case "anotherTurn":
                 if (player == 1) {
                     if (checkIfAnotherTurn(lastField, player))
                         anotherTurn += 5;
                 } else {
-                    eval = -eval;
                     if (checkIfAnotherTurn(lastField, player))
                         anotherTurn -= 5;
                 }
 
-                eval += anotherTurn;
-                return eval;
+                return anotherTurn;
             case "anotherAndBeating":
                 copy = new int[14];
                 for (int i = 0; i < board.length; i++) {
@@ -312,7 +309,6 @@ class GameBoard {
                     if (checkIfAnotherTurn(lastField, player))
                         anotherTurn += 5;
                 } else {
-                    eval = -eval;
                     if (checkIfBeating(copy, moveField, player) != -1)
                         beating -= 5;
 
@@ -320,8 +316,37 @@ class GameBoard {
                         anotherTurn -= 5;
                 }
 
-                eval += beating;
-                eval += anotherTurn;
+                return beating + anotherTurn;
+            case "howFarToWin":
+                if (player == 1){
+                    howFar = -(25 - board[6].getStonesAmount());
+                } else {
+                    howFar = 25 - board[13].getStonesAmount();
+                }
+                return howFar;
+            case "everything":
+                copy = new int[14];
+                for (int i = 0; i < board.length; i++) {
+                    copy[i] = board[i].getStonesAmount();
+                }
+
+                if (player == 1) {
+                    howFar = -(25 - board[6].getStonesAmount());
+                    if (checkIfBeating(copy, moveField, player) != -1)
+                        beating += 5;
+
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn += 5;
+                } else {
+                    eval = -eval;
+                    howFar = 25 - board[13].getStonesAmount();
+                    if (checkIfBeating(copy, moveField, player) != -1)
+                        beating -= 5;
+
+                    if (checkIfAnotherTurn(lastField, player))
+                        anotherTurn -= 5;
+                }
+                eval += howFar + beating + anotherTurn;
                 return eval;
             default:
                 if (player == 1)

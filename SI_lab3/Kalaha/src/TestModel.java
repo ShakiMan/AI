@@ -9,11 +9,12 @@ public class TestModel {
 
     @Override
     public String toString() {
-        return "TestModel{ " +
+        return player + "\t" + averageTime + "\t" + moves;
+        /*return "TestModel{ " +
                 "player= " + player +
                 ", averageTime= " + averageTime +
                 ", moves= " + moves +
-                " }";
+                " }";*/
     }
 
     public long getMoves() {

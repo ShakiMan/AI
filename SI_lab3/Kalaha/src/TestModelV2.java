@@ -27,10 +27,11 @@ public class TestModelV2 {
 
     @Override
     public String toString() {
-        return "TestModelV2{ " +
+        return id + "\t" + time + "\t" + counter;
+        /*return "TestModelV2{ " +
                 "id= " + id +
                 ", time= " + time +
                 ", counter= " + counter +
-                " }";
+                " }";*/
     }
 }

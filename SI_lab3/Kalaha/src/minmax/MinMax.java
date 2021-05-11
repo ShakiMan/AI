@@ -9,14 +9,22 @@ public class MinMax {
     private int player = -1;
     private int nextMoveNumber = -1;
     private final boolean isAlphaBeta;
+    private final String heuristic;
 
-    public MinMax(boolean isAlphaBeta, int maxDepth) {
+    public MinMax(boolean isAlphaBeta, int maxDepth, String heuristic) {
         this.isAlphaBeta = isAlphaBeta;
         this.maxDepth = maxDepth;
+        this.heuristic = heuristic;
     }
 
-    public int findBest(Kalaha initialPosition, int player) {
-        if (initialPosition.isFirstMove() && player == 1) {
+    public MinMax(boolean isAlphaBeta, int maxDepth) {
+        this.maxDepth = maxDepth;
+        this.isAlphaBeta = isAlphaBeta;
+        this.heuristic = "";
+    }
+
+    public int findBest(Kalaha initialPosition, int player, boolean isFirstRandom) {
+        if (initialPosition.isFirstMove() && player == 1 && isFirstRandom) {
             return 1 + new Random().nextInt(6);
         }
 
@@ -41,7 +49,7 @@ public class MinMax {
 
     private int minimax(Kalaha position, int depth, int alpha, int beta, boolean maximizingPlayer) {
         if (depth == 0 || position.gameOver()) {
-            return position.evaluate(player, "anotherAndBeating", position.getLastFieldIndex(), position.getLastMoveIndex());
+            return position.evaluate(player, heuristic, position.getLastFieldIndex(), position.getLastMoveIndex());
         }
 
         if (maximizingPlayer) {
