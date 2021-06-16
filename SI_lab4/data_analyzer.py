@@ -1,3 +1,8 @@
+import nltk
+from nltk.corpus import stopwords
+nltk.download('stopwords')
+nltk.download('punkt')
+
 def count_words(reviews_list):
     counted_words = {}
     for review in reviews_list:
@@ -9,6 +14,7 @@ def count_words(reviews_list):
                 counted_words[word] = 1
 
     # counted_words = {k: v for k, v in sorted(counted_words.items(), key=lambda item: item[1])}
+    # counted_words = __filter_stop_words(counted_words)
     return counted_words
 
 
@@ -49,3 +55,7 @@ def __is_word(word):
         if (word[i].lower() < "a" or word[i].lower() > "z") and word[i] != "'":
             return False
     return True
+
+
+def __filter_stop_words(words: dict):
+    return {k: v for k, v in words.items() if k not in stopwords.words('english')}
